@@ -1,90 +1,96 @@
-# Persistência Parcial
+# van Emde Boas com espaço linear
 
-O objetivo do trabalho é implementar uma estrutura de dados que suporta persistência parcial seguindo o método descrito em sala.
+Implemente uma estrutura van Emde Boas com espaço linear.
+Ela deve armazenar inteiros não negativos de 32 bits.
 
-- A complexidade de uma operação em qualquer versão deve ter um custo adicional multiplicativo de `O(1)` amortizado.
-- Se sua estrutura tem `v` versões, o espaço total utilizado deve ser `O(v)`.
+A mesma implementação deve ser feita tanto pelas equipes de graduação quanto pelas de pós-graduação.
 
-Cada nó da sua estrutura deve armazenar um valor inteiro não negativo com pelo menos 16 bits e valores repetidos são permitidos.
+Valores repetidos são permitidos.
+Uma chave pode ser armazenada uma única vez, junto com sua quantidade de ocorrências.
+A remoção de uma ocorrência não deve remover a chave enquanto houver outras.
 
-## Graduação
+## Espaço e tabela de dispersão
 
-Implementar uma lista encadeada ordenada.
+Para `n` chaves distintas presentes, a estrutura deve usar `O(n)` espaço.
+Não aloque antecipadamente vetores de tamanho proporcional ao universo ou ao número de clusters possíveis nas estruturas recursivas.
+Crie clusters e resumos conforme a necessidade.
+Libere as estruturas vazias.
 
-## Pós-graduação
+O armazenamento dos clusters deve usar uma tabela de dispersão implementada no trabalho, com:
 
-Implementar uma árvore binária de busca. **Não** precisa ser auto-balanceável, como árvores AVL ou rubro-negras.
+- endereçamento aberto e tentativa linear;
+- aumento da capacidade por **table doubling** e redução por **table halving**. Use limites de ocupação que evitem redimensionamentos consecutivos;
+- **simple tabulation hashing**: divida a chave de 32 bits em quatro partes de 8 bits. Combine por XOR os valores de quatro tabelas de 256 valores aleatórios. Compartilhe essas tabelas entre todas as tabelas de dispersão do trabalho.
+
+As operações da estrutura devem seguir a decomposição recursiva da van Emde Boas.
+Inclusão, remoção, sucessor e predecessor devem ter tempo esperado amortizado `O(log w)`, para palavras com `w = 32` bits.
+A impressão depende também da quantidade de elementos impressos.
+Não é permitido substituir a estrutura ou a tabela de dispersão exigidas por estruturas prontas de biblioteca.
 
 ## Operações
 
-As estruturas devem suportar as seguintes operações:
+Cada linha de entrada contém uma operação.
+`N` é um inteiro decimal não negativo de 32 bits.
+As operações de inclusão e remoção não produzem saída.
 
-- **Inclusão:** Uma operação de inclusão será identificada por uma linha como `INC N`.
-Isto significa que um elemento com chave N deve ser incluído na estrutura e uma nova versão criada.
-Se a chave já estiver presente ela deve ser adicionada novamente.
+- **Inclusão:** `INC N` adiciona uma ocorrência de `N`, mesmo que a chave já esteja presente.
 
-Exemplo de linha de inclusão:
-```
-INC 80
-```
+  ```
+  INC 80
+  ```
 
-- **Remoção:** Uma operação de remoção será identificada por uma linha como `REM N`.
-Um elemento com este valor deve ser removido (apenas um se houver repetição).
-Caso não haja um nó com o valor especificado, a estrutura não deve ser alterada.
-Em ambos os casos uma nova versão deve ser criada.
+- **Remoção:** `REM N` remove apenas uma ocorrência de `N`.
+  Se `N` não estiver presente, a estrutura não é alterada.
 
-Exemplo de linha de remoção:
+  ```
+  REM 17
+  ```
 
-```
-REM 17
-```
+- **Sucessor:** `SUC N` imprime a linha da operação.
+  Na linha seguinte, imprime a menor chave presente estritamente maior que `N`.
+  A chave `N` não precisa estar presente.
+  Se não houver sucessor, imprime `inf`.
 
-- **Sucessor:** Uma operação de sucessor será identificada por uma linha como `SUC N M`.
-A linha de entrada deve ser impressa e, em seguida, a chave com menor valor que é estritamente maior que ```N``` na versão ```M``` da estrutura deve ser impressa uma linha abaixo.
-Não é necessário existir um elemento com chave `N` na estrutura para que a operação de sucessor seja feita.
-Se não houver nenhum elemento na estrutura com chave estritamente maior que `N`, o resultado deve ser `inf`.
+  Exemplo de entrada:
+  ```
+  SUC 2
+  ```
 
-Exemplo de linha de sucessor:
+  Exemplo de saída:
+  ```
+  SUC 2
+  5
+  ```
 
-```
-SUC 2 20
-```
+- **Predecessor:** `PRE N` imprime a linha da operação.
+  Na linha seguinte, imprime a maior chave presente estritamente menor que `N`.
+  A chave `N` não precisa estar presente.
+  Se não houver predecessor, imprime `-inf`.
 
-Exemplo dessa linha na impressão de saída:
+  Exemplo de entrada:
+  ```
+  PRE 5
+  ```
 
-```
-SUC 2 20
-5
-```
+  Exemplo de saída:
+  ```
+  PRE 5
+  2
+  ```
 
-- **Imprimir:** Uma operação de impressão será identificada por uma linha como `IMP M`.
-A linha de entrada deve ser impressa e, em seguida, os elementos da estrutura na versão `M` devem ser impressos na linha abaixo em ordem crescente, separados por vírgula e espaço.
-Caso a versão fornecida não exista, a impressão deve ocorrer na versão mais recente.
-Caso a estrutura esteja vazia na versão em questão, o resultado da impressão deve ser uma linha em branco.
-Essa operação não deve criar uma nova versão na estrutura.
+- **Imprimir:** `IMP` imprime a linha da operação.
+  Na linha seguinte, imprime todos os elementos presentes em ordem crescente, separados por vírgula e espaço.
+  Imprime cada valor repetido tantas vezes quanto ele estiver presente.
+  Se a estrutura estiver vazia, a segunda linha deve ficar em branco.
 
-Exemplo de linha de impressão:
+  Exemplo de entrada:
+  ```
+  IMP
+  ```
 
-```
-IMP 20
-```
+  Exemplo de saída:
+  ```
+  IMP
+  1, 5, 5, 13, 16, 21, 42, 50, 65, 80, 100
+  ```
 
-Exemplo dessa linha na impressão de saída:
-
-```
-IMP 20
-1, 5, 13, 16, 21, 42, 50, 65, 80, 100
-```
-
-## Versões
-
-- A estrutura (vazia) deve começar na versão 0.
-- Cada operação de inclusão e remoção aumenta a versão da estrutura em 1.
-  - Operações de remoção que não removem nenhum elemento ainda aumentam a versão em 1.
-- Haverá no máximo 1000 operações de inclusão e/ou remoção.
-  - No máximo 1001 versões diferentes da estrutura precisam ser armazenadas.
-  - Identificadores das versões (contendo a raiz da estrutura e qualquer outra informação que você precisar) podem ser guardados num vetor de tamanho 1001.
-- Não há limite para o número de operações de sucessor e de impressão, mas estas não criam novas versões.
-- Sua estrutura de dados pode criar "_versões parciais_" para operações de inclusão ou remoção.
-  - Uma única inserção pode ocasionar mais de uma modificação de campo na sua estrutura.
-  - Tenha o cuidado de separar identificadores de versão internos à sua estrutura de identificadores de versão usados no arquivo de entrada.
