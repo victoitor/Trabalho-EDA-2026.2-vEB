@@ -1,12 +1,11 @@
 # Estruturas de Dados Avançadas 2026.2 - Trabalho de van Emde Boas
 
 Repositório base para o trabalho de van Emde Boas da disciplina de Estruturas de Dados Avançadas (CK0126)/Estruturas de Dados (CKP8077).
-Este arquivo contém informações gerais sobre a organização e entrega do trabalho.
-A descrição detalhada deste trabalho está no arquivo [TRABALHO.md](https://github.com/victoitor/Estruturas-de-Dados-Avancadas/blob/main/TRABALHO.md).
+Este arquivo contém as instruções gerais de entrega. O enunciado completo está no arquivo [TRABALHO.md](TRABALHO.md).
 
-Você pode clonar esse repositório utilizando 
+Você pode clonar este repositório utilizando:
 ```
-git clone https://github.com/victoitor/<atualizar-quando-criado>.git
+git clone <URL_DO_REPOSITORIO>
 ```
 
 ## Grupos
@@ -27,13 +26,13 @@ O envio de todos os trabalhos deve conter:
 
 ### Exemplo de `Makefile`
 ```makefile
-INPUT = entrada.in
+INPUT ?= entrada.in
 
-build: main.cpp
-  g++ -o programa main.cpp
+build:
+	g++ -std=c++17 -Wall -Wextra -O2 -o programa main.cpp
 
-run:
-  ./programa $(INPUT)
+run: build
+	./programa $(INPUT)
 ```
 
 Aqui temos dois comandos: `build` e `run`.
@@ -48,12 +47,12 @@ make run INPUT=entrada2.in
 
 ## Entrada e saída
 
-- A entrada **precisa** ler o arquivo fornecido na variável `INPUT` do `Makefile` ao rodar seu programa com `make run`, como no exemplo acima.
-- A saída **precisa** ser impressa no terminal.
+Consulte o arquivo [TRABALHO.md](TRABALHO.md) para os formatos de entrada e saída.
+A entrada deve ser lida do arquivo indicado por `INPUT`, e a saída deve ser impressa no terminal.
 
 ## Testes
 
-Parte da nota dos trabalhos vêm do comportamento do seu programa com algumas entradas de teste.
+Parte da nota dos trabalhos vem do comportamento do seu programa com algumas entradas de teste.
 Cada teste consiste em uma entrada específica e uma saída esperada, seu programa será executado com a entrada e a saída vai ser comparada com a saída esperada.
 O caso de teste só será bem-sucedido se a saída for **exatamente igual** à saída esperada, incluindo espaços e quebras de linha.
 

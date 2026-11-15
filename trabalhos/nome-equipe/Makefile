@@ -1,11 +1,12 @@
-INPUT = entrada.txt
+INPUT ?= entrada.in
 
-# O comando `make build` compila o conteúdo do arquivo `main.cpp` usando o compilador `g++` e cria o programa executável `programa` como saída.
-.PHONY build
-build: main.cpp
-	  g++ -o programa main.cpp
+.PHONY: build run clean
 
-# O comando `make run` coloca `programa` para rodar passando como entrada o arquivo fornecido pela variável `INPUT`.
-.PHONY run
-run:
-	  ./programa $(INPUT)
+build:
+	g++ -std=c++17 -Wall -Wextra -O2 -o programa main.cpp
+
+run: build
+	./programa $(INPUT)
+
+clean:
+	rm -f programa
